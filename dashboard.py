@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.graph_objs as go
+import plotly.express as px
 from datetime import datetime, timedelta
 
 # Function to calculate MAPE
@@ -74,64 +74,32 @@ last_historic_date = historic_df['datetime'].max()
 last_update_time = last_historic_date + timedelta(minutes=30)
 last_update_time_str = last_update_time.strftime('%Y-%m-%d %H:%M:%S')
 
-# Define custom colors
-historic_color = 'cadetblue'
-predictions_color = 'darkorange'
+# Plot the data using Plotly Express
+fig = px.line(df_merged, x='datetime', y=['temperature', 'predictions'],
+              labels={'value': 'Temperature', 'datetime': 'Date'},
+              title=f"Actual vs Predicted Temperature (Last Update: {last_update_time_str})")
 
-# Plot the data using Plotly with custom colors and line style
-fig = go.Figure()
+# Update line styles and colors
+for trace in fig.data:
+    if trace.name == 'temperature':
+        trace.update(line=dict(color='cadetblue', width=2))
+    elif trace.name == 'predictions':
+        trace.update(line=dict(color='darkorange', width=2, dash='dash'))
 
-# Add historic_df line (solid)
-fig.add_trace(go.Scatter(
-    x=df_merged['datetime'],
-    y=df_merged['temperature'],
-    mode='lines+markers',
-    name='Historic Temperature',
-    line=dict(color=historic_color, width=2),
-    marker=dict(size=5)
-))
+# Add annotations for the points
+for i, row in df_merged.iterrows():
+    if not pd.isna(row['temperature']):
+        fig.add_annotation(x=row['datetime'], y=row['temperature'],
+                           text=f"{row['temperature']:.2f}", showarrow=False, yshift=10, font=dict(size=10, color='cadetblue'))
+    if not pd.isna(row['predictions']) and (row['datetime'] <= last_historic_date or i % 3 == 0):
+        fig.add_annotation(x=row['datetime'], y=row['predictions'],
+                           text=f"{row['predictions']:.2f}", showarrow=False, yshift=-10, font=dict(size=10, color='darkorange'))
 
-# Add predictions_df line (dashed)
-fig.add_trace(go.Scatter(
-    x=df_merged['datetime'],
-    y=df_merged['predictions'],
-    mode='lines',  # Removed markers
-    name='Predicted Temperature',
-    line=dict(color=predictions_color, width=2, dash='dash')  # Changed to dashed line
-))
-
-# Add small labels (annotations) to specific points in historic_df only
-for i in range(len(df_merged)):
-    if not pd.isna(df_merged['temperature'].iloc[i]):
-        fig.add_annotation(
-            x=df_merged['datetime'].iloc[i],
-            y=df_merged['temperature'].iloc[i],
-            text=f"{df_merged['temperature'].iloc[i]:.2f}",
-            showarrow=False,
-            yshift=10,
-            font=dict(size=10, color=historic_color)
-        )
-
-# Add annotations for predictions_df every hour until the last data point of historic_df
-for i in range(len(df_merged)):
-    if not pd.isna(df_merged['predictions'].iloc[i]):
-        # Convert the datetime string to a Timestamp for comparison
-        datetime_value = pd.to_datetime(df_merged['datetime'].iloc[i])
-        if datetime_value <= last_historic_date or (i % 3 == 0):
-            fig.add_annotation(
-                x=df_merged['datetime'].iloc[i],
-                y=df_merged['predictions'].iloc[i],
-                text=f"{df_merged['predictions'].iloc[i]:.2f}",
-                showarrow=False,
-                yshift=-10,
-                font=dict(size=10, color=predictions_color)
-            )
-
-# Customize the layout for the plot
+# Update the layout to match the previous design
 fig.update_layout(
     width=2000,
     height=800,
-    title={'text': f"Actual vs Predicted Temperature (Last Update: {last_update_time_str})", 'x': 0.5, 'font': {'size': 11}},
+    title_x=0.5,
     xaxis_title="Date",
     yaxis_title="Temperature",
     xaxis=dict(title_font=dict(size=14), tickfont=dict(size=10)),
