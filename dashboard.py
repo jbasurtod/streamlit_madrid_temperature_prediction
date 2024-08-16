@@ -39,7 +39,7 @@ This visualization features a productivized XGBoost machine learning model train
 historic_url = 'https://drive.google.com/uc?id=12IUAsaeNNcNbIgXsXcR0UBqrKPx-ZncK'
 predictions_url = 'https://drive.google.com/uc?id=1KXjcZsmCR5DMFXAAFQF34mhGtmnQI9qO'
 
-@st.cache_data
+#@st.cache_data
 def load_data(url):
     return pd.read_csv(url)
 
