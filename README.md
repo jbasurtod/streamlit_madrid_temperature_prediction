@@ -1,9 +1,9 @@
 # Predicting Temperatures in Barrio San Isidro, Madrid
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jbasurtod/streamlit_madrid_temperature_prediction/main/img/airflow.png" alt="Airflow" width="400px"/>
-  <img src="https://raw.githubusercontent.com/jbasurtod/streamlit_madrid_temperature_prediction/main/img/xgboost.png" alt="XGBoost" width="400px"/>
-  <img src="https://raw.githubusercontent.com/jbasurtod/streamlit_madrid_temperature_prediction/main/img/gdrive.png" alt="Google Drive" width="400px"/>
+  <img src="https://raw.githubusercontent.com/jbasurtod/streamlit_madrid_temperature_prediction/main/img/airflow.png" alt="Airflow" width="300px"/>
+  <img src="https://raw.githubusercontent.com/jbasurtod/streamlit_madrid_temperature_prediction/main/img/xgboost.png" alt="XGBoost" width="300px"/>
+  <img src="https://raw.githubusercontent.com/jbasurtod/streamlit_madrid_temperature_prediction/main/img/gdrive.png" alt="Google Drive" width="100px"/>
 </p>
 
 ## About
