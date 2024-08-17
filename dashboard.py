@@ -28,7 +28,7 @@ with st.sidebar:
     st.markdown("[GitHub Profile](https://github.com/jbasurtod)", unsafe_allow_html=True)
 
 # Set the title of the Streamlit page
-st.markdown("<h1 style='margin-top: 0;'>Predicting Temperatures in Madrid - Station 'Farolillo'</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='margin-top: 0;'>Predicting Temperatures in Barrio San Isidro, Madrid</h1>", unsafe_allow_html=True)
 
 # Provide a brief summary with a link
 st.write("""
