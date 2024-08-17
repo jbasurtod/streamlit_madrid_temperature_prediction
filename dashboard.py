@@ -127,7 +127,7 @@ fig.update_layout(
     height=800,
     title=f"Actual vs Predicted Temperature (Last Update: {last_update_time_str})",
     xaxis_title="Date",
-    yaxis_title="Temperature",
+    yaxis_title="Temperature (Celsius)",
     xaxis=dict(title_font=dict(size=14), tickfont=dict(size=10)),
     yaxis=dict(title_font=dict(size=14), tickfont=dict(size=10)),
     legend=dict(
