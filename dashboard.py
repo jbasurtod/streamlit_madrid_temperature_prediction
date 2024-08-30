@@ -188,3 +188,6 @@ table_df = df_merged[['datetime', 'temperature', xgb_pred_column, lstm_pred_colu
 # Display the table in Streamlit
 st.write("### Temperature and Predictions")
 st.dataframe(table_df.rename(columns={'pred_xgb':'XGB Predictions','pred_lstm':'LSTM Predictions'}).round(1))
+
+st.markdown("<p style='font-size:12px;'>Origen de los datos: Ayuntamiento de Madrid. This app is not related in any way with Ayuntamiento de Madrid.</p>", 
+    unsafe_allow_html=True)
