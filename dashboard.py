@@ -33,7 +33,7 @@ st.markdown("<h1 style='margin-top: 0;'>Predicting Temperatures in Barrio San Is
 
 # Provide a brief summary with a link
 st.write("""
-This visualization features a productivized XGBoost machine learning model trained on temperature data from Madrid's open data portal. The model updates hourly using real-time temperature data [available here](https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=4985724ec1acd610VgnVCM1000001d4a900aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default). Its predictions are continuously compared with historical temperature records to provide insights into trends and forecast accuracy. This productivized project uses Airflow, Google Drive and Streamlit.
+This visualization features productivized XGBoost and LSTM machine learning models trained on temperature data from Madrid's open data portal. The model updates hourly using real-time temperature data [available here](https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=4985724ec1acd610VgnVCM1000001d4a900aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default). Its predictions are continuously compared with historical temperature records to provide insights into trends and forecast accuracy. This productivized viz uses Airflow, Google Drive and Streamlit.
 """)
 
 # URLs for the CSV files
