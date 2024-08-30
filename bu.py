@@ -1,4 +1,3 @@
-# Import necessary libraries
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -65,25 +64,13 @@ df_merged = pd.merge(historic_df, predictions_df_filtered, on='datetime', how='o
 # Sort by datetime to ensure proper plotting order
 df_merged.sort_values(by='datetime', inplace=True)
 
-lstm_pred_column = 'pred_lstm'
-xgb_pred_column = 'pred_xgb'
+pred_column = 'pred_lstm'
 
 # Calculate MAPE for the last 30 hours
-mape_xgb = mean_absolute_percentage_error(df_merged['temperature'], df_merged[xgb_pred_column])
-mape_lstm = mean_absolute_percentage_error(df_merged['temperature'], df_merged[lstm_pred_column])
+mape_value = mean_absolute_percentage_error(df_merged['temperature'], df_merged[pred_column])
 
-# Display the MAPE values side by side
-st.markdown(f"""
-    <div style="display: flex; justify-content: space-around;">
-        <div style="color: darkorange; font-size: 20px; font-weight: bold;">
-            Last 30 hours XGB MAPE: {mape_xgb:.2%}
-        </div>
-        <div style="color: #5bcf6e; font-size: 20px; font-weight: bold;">
-            Last 30 hours LSTM MAPE: {mape_lstm:.2%}
-        </div>
-    </div>
-""", unsafe_allow_html=True)
-
+# Display the MAPE value with larger font, bold, and pastel blue color
+st.markdown(f"<h4 style='color: #5b95cf;'><strong>Last 30 hours MAPE: {mape_value:.2%}</strong></h4>", unsafe_allow_html=True)
 
 # Determine the last date of historic_df and add 30 minutes
 last_historic_date = historic_df['datetime'].max()
@@ -92,8 +79,7 @@ last_update_time_str = last_update_time.strftime('%Y-%m-%d %H:%M:%S')
 
 # Define custom colors
 historic_color = 'cadetblue'
-xgb_color = 'darkorange'
-lstm_color = '#5bcf6e'
+predictions_color = 'darkorange'
 
 # Create figure using Plotly graph objects
 fig = go.Figure()
@@ -111,54 +97,32 @@ fig.add_trace(go.Scatter(
 # Add predictions_df line (dashed)
 fig.add_trace(go.Scatter(
     x=df_merged['datetime'],
-    y=df_merged[xgb_pred_column],
+    y=df_merged[pred_column],
     mode='lines',  # Removed markers
-    name='XGBoost Predictions',
-    line=dict(color=xgb_color, width=2, dash='dash')  # Changed to dashed line
-))
-
-# Add predictions_df line (dashed)
-fig.add_trace(go.Scatter(
-    x=df_merged['datetime'],
-    y=df_merged[lstm_pred_column],
-    mode='lines',  # Removed markers
-    name='LSTM Predictions',
-    line=dict(color=lstm_color, width=2, dash='dash')  # Changed to dashed line
+    name='Predicted Temperature',
+    line=dict(color=predictions_color, width=2, dash='dash')  # Changed to dashed line
 ))
 
 # Add small labels (annotations) to specific points in historic_df only
-last_label_time = None
-
 for i, row in df_merged.iterrows():
-    if last_label_time is None or (row['datetime'] - last_label_time).total_seconds() >= 3 * 3600:
-        if not pd.isna(row['temperature']):
-            fig.add_annotation(
-                x=row['datetime'],
-                y=row['temperature'],
-                text=f"{row['temperature']:.2f}",
-                showarrow=False,
-                yshift=10,
-                font=dict(size=10, color=historic_color)
-            )
-        if not pd.isna(row[xgb_pred_column]):
-            fig.add_annotation(
-                x=row['datetime'],
-                y=row[xgb_pred_column],
-                text=f"{row[xgb_pred_column]:.2f}",
-                showarrow=False,
-                yshift=-10,
-                font=dict(size=10, color=xgb_color)
-            )
-        if not pd.isna(row[lstm_pred_column]):
-            fig.add_annotation(
-                x=row['datetime'],
-                y=row[lstm_pred_column],
-                text=f"{row[lstm_pred_column]:.2f}",
-                showarrow=False,
-                yshift=-10,
-                font=dict(size=10, color=lstm_color)
-            )
-        last_label_time = row['datetime']
+    if not pd.isna(row['temperature']):
+        fig.add_annotation(
+            x=row['datetime'],
+            y=row['temperature'],
+            text=f"{row['temperature']:.2f}",
+            showarrow=False,
+            yshift=10,
+            font=dict(size=10, color=historic_color)
+        )
+    if not pd.isna(row['predictions']) and (row['datetime'] <= last_historic_date or i % 3 == 0):
+        fig.add_annotation(
+            x=row['datetime'],
+            y=row['predictions'],
+            text=f"{row['predictions']:.2f}",
+            showarrow=False,
+            yshift=-10,
+            font=dict(size=10, color=predictions_color)
+        )
 
 # Update layout for the plot
 fig.update_layout(
@@ -181,10 +145,3 @@ fig.update_layout(
 
 # Show the plot in Streamlit
 st.plotly_chart(fig)
-
-# Filter the DataFrame to include only rows where 'temperature' is not NaN
-table_df = df_merged[['datetime', 'temperature', xgb_pred_column, lstm_pred_column]].dropna(subset=['temperature'])
-
-# Display the table in Streamlit
-st.write("### Temperature and Predictions")
-st.dataframe(table_df.rename(columns={'pred_xgb':'XGB Predictions','pred_lstm':'LSTM Predictions'}).round(1))
