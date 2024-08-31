@@ -122,10 +122,9 @@ fig.add_trace(go.Scatter(
     line=dict(color=lstm_color, width=2, dash='dash')
 ))
 
-
-# Add small labels (annotations) to specific points in historic_df only
+# Add small labels (annotations) every 3 hours and for last temperature point
 last_label_time = None
-last_row = df_merged.iloc[-1]
+last_temp_row = df_merged.dropna(subset=['temperature']).iloc[-1]
 
 for i, row in df_merged.iterrows():
     # Annotate every 3 hours
@@ -159,38 +158,33 @@ for i, row in df_merged.iterrows():
             )
         last_label_time = row['datetime']
 
-# Annotate the last data point for 'temperature', 'xgb_pred_column', and 'lstm_pred_column' regardless of interval
-if not pd.isna(last_row['temperature']):
+# Annotate the last 'temperature' data point and corresponding prediction points for xgb and lstm
+last_temp_time = last_temp_row['datetime']
+if not pd.isna(last_temp_row['temperature']):
     fig.add_annotation(
-        x=last_row['datetime'],
-        y=last_row['temperature'],
-        text=f"{last_row['temperature']:.2f}",
-        showarrow=True,
-        arrowhead=2,
-        ax=0,
-        ay=-30,
+        x=last_temp_time,
+        y=last_temp_row['temperature'],
+        text=f"{last_temp_row['temperature']:.2f}",
+        showarrow=False,
+        yshift=10,
         font=dict(size=10, color=historic_color)
     )
-if not pd.isna(last_row[xgb_pred_column]):
+if not pd.isna(last_temp_row[xgb_pred_column]):
     fig.add_annotation(
-        x=last_row['datetime'],
-        y=last_row[xgb_pred_column],
-        text=f"{last_row[xgb_pred_column]:.2f}",
-        showarrow=True,
-        arrowhead=2,
-        ax=0,
-        ay=-30,
+        x=last_temp_time,
+        y=last_temp_row[xgb_pred_column],
+        text=f"{last_temp_row[xgb_pred_column]:.2f}",
+        showarrow=False,
+        yshift=-10,
         font=dict(size=10, color=xgb_color)
     )
-if not pd.isna(last_row[lstm_pred_column]):
+if not pd.isna(last_temp_row[lstm_pred_column]):
     fig.add_annotation(
-        x=last_row['datetime'],
-        y=last_row[lstm_pred_column],
-        text=f"{last_row[lstm_pred_column]:.2f}",
-        showarrow=True,
-        arrowhead=2,
-        ax=0,
-        ay=-30,
+        x=last_temp_time,
+        y=last_temp_row[lstm_pred_column],
+        text=f"{last_temp_row[lstm_pred_column]:.2f}",
+        showarrow=False,
+        yshift=-10,
         font=dict(size=10, color=lstm_color)
     )
 
