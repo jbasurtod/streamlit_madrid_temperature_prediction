@@ -130,7 +130,9 @@ fig.add_trace(go.Scatter(
 last_label_time = None
 
 for i, row in df_merged.iterrows():
-    if last_label_time is None or (row['datetime'] - last_label_time).total_seconds() >= 3 * 3600:
+    is_last_row = (i == df_merged.index[-1])  # Check if it's the last row
+
+    if last_label_time is None or (row['datetime'] - last_label_time).total_seconds() >= 3 * 3600 or is_last_row:
         if not pd.isna(row['temperature']):
             fig.add_annotation(
                 x=row['datetime'],
@@ -140,6 +142,7 @@ for i, row in df_merged.iterrows():
                 yshift=10,
                 font=dict(size=10, color=historic_color)
             )
+        
         if not pd.isna(row[xgb_pred_column]):
             fig.add_annotation(
                 x=row['datetime'],
@@ -149,6 +152,7 @@ for i, row in df_merged.iterrows():
                 yshift=-10,
                 font=dict(size=10, color=xgb_color)
             )
+        
         if not pd.isna(row[lstm_pred_column]):
             fig.add_annotation(
                 x=row['datetime'],
@@ -158,7 +162,11 @@ for i, row in df_merged.iterrows():
                 yshift=-10,
                 font=dict(size=10, color=lstm_color)
             )
-        last_label_time = row['datetime']
+        
+        # Update last_label_time only if it's not the last row
+        if not is_last_row:
+            last_label_time = row['datetime']
+
 
 # Update layout for the plot
 fig.update_layout(
