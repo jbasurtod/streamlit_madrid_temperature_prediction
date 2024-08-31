@@ -95,10 +95,10 @@ historic_color = 'cadetblue'
 xgb_color = 'darkorange'
 lstm_color = '#5bcf6e'
 
-# Create figure using Plotly graph objects
+# Create the Plotly figure
 fig = go.Figure()
 
-# Add historic_df line (solid)
+# Add traces for historic temperature, XGBoost predictions, and LSTM predictions
 fig.add_trace(go.Scatter(
     x=df_merged['datetime'],
     y=df_merged['temperature'],
@@ -107,32 +107,29 @@ fig.add_trace(go.Scatter(
     line=dict(color=historic_color, width=2),
     marker=dict(size=5)
 ))
-
-# Add predictions_df line (dashed)
 fig.add_trace(go.Scatter(
     x=df_merged['datetime'],
     y=df_merged[xgb_pred_column],
-    mode='lines',  # Removed markers
+    mode='lines',
     name='XGBoost Predictions',
-    line=dict(color=xgb_color, width=2, dash='dash')  # Changed to dashed line
+    line=dict(color=xgb_color, width=2, dash='dash')
 ))
-
-# Add predictions_df line (dashed)
 fig.add_trace(go.Scatter(
     x=df_merged['datetime'],
     y=df_merged[lstm_pred_column],
-    mode='lines',  # Removed markers
+    mode='lines',
     name='LSTM Predictions',
-    line=dict(color=lstm_color, width=2, dash='dash')  # Changed to dashed line
+    line=dict(color=lstm_color, width=2, dash='dash')
 ))
+
 
 # Add small labels (annotations) to specific points in historic_df only
 last_label_time = None
+last_row = df_merged.iloc[-1]
 
 for i, row in df_merged.iterrows():
-    is_last_row = (i == df_merged.index[-1])  # Check if it's the last row
-
-    if last_label_time is None or (row['datetime'] - last_label_time).total_seconds() >= 3 * 3600 or is_last_row:
+    # Annotate every 3 hours
+    if last_label_time is None or (row['datetime'] - last_label_time).total_seconds() >= 3 * 3600:
         if not pd.isna(row['temperature']):
             fig.add_annotation(
                 x=row['datetime'],
@@ -142,7 +139,6 @@ for i, row in df_merged.iterrows():
                 yshift=10,
                 font=dict(size=10, color=historic_color)
             )
-        
         if not pd.isna(row[xgb_pred_column]):
             fig.add_annotation(
                 x=row['datetime'],
@@ -152,7 +148,6 @@ for i, row in df_merged.iterrows():
                 yshift=-10,
                 font=dict(size=10, color=xgb_color)
             )
-        
         if not pd.isna(row[lstm_pred_column]):
             fig.add_annotation(
                 x=row['datetime'],
@@ -162,11 +157,42 @@ for i, row in df_merged.iterrows():
                 yshift=-10,
                 font=dict(size=10, color=lstm_color)
             )
-        
-        # Update last_label_time only if it's not the last row
-        if not is_last_row:
-            last_label_time = row['datetime']
+        last_label_time = row['datetime']
 
+# Annotate the last data point for 'temperature', 'xgb_pred_column', and 'lstm_pred_column' regardless of interval
+if not pd.isna(last_row['temperature']):
+    fig.add_annotation(
+        x=last_row['datetime'],
+        y=last_row['temperature'],
+        text=f"{last_row['temperature']:.2f}",
+        showarrow=True,
+        arrowhead=2,
+        ax=0,
+        ay=-30,
+        font=dict(size=10, color=historic_color)
+    )
+if not pd.isna(last_row[xgb_pred_column]):
+    fig.add_annotation(
+        x=last_row['datetime'],
+        y=last_row[xgb_pred_column],
+        text=f"{last_row[xgb_pred_column]:.2f}",
+        showarrow=True,
+        arrowhead=2,
+        ax=0,
+        ay=-30,
+        font=dict(size=10, color=xgb_color)
+    )
+if not pd.isna(last_row[lstm_pred_column]):
+    fig.add_annotation(
+        x=last_row['datetime'],
+        y=last_row[lstm_pred_column],
+        text=f"{last_row[lstm_pred_column]:.2f}",
+        showarrow=True,
+        arrowhead=2,
+        ax=0,
+        ay=-30,
+        font=dict(size=10, color=lstm_color)
+    )
 
 # Update layout for the plot
 fig.update_layout(
