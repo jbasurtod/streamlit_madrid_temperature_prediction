@@ -26,15 +26,30 @@ with st.sidebar:
         unsafe_allow_html=True
     )
     st.markdown("<h2>Created by Juan C Basurto</h2>", unsafe_allow_html=True)
-    st.markdown("[GitHub Profile](https://github.com/jbasurtod)", unsafe_allow_html=True)
+    # Create two columns
+    col1, col2 = st.columns([1, 5])  # Adjust the width ratio as needed
+
+    # Place the image in the first column
+    with col1:
+        st.image("img/github-logo.png", width=25)
+
+    # Place the markdown link in the second column
+    with col2:
+        st.markdown("[GitHub Profile](https://github.com/jbasurtod)", unsafe_allow_html=True)
+    # Provide a brief summary with a link
+    st.markdown("<h2>About This Streamlit App</h2>", unsafe_allow_html=True)
+    st.write("""
+    This visualization features productivized XGBoost and LSTM machine learning models trained on temperature data from Madrid's open data portal. The model updates hourly using real-time temperature data [available here](https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=4985724ec1acd610VgnVCM1000001d4a900aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default). Its predictions are continuously compared with historical temperature records to provide insights into trends and forecast accuracy. This productivized viz uses Airflow, Google Drive and Streamlit. You can check the [productivized model here](https://bit.ly/madridtemp).
+    """)
+
+
+    st.markdown("<p style='font-size:12px;'>Origen de los datos en tiempo real: Ayuntamiento de Madrid. This app is not related in any way with Ayuntamiento de Madrid.</p>", 
+        unsafe_allow_html=True)
 
 # Set the title of the Streamlit page
 st.markdown("<h1 style='margin-top: 0;'>Predicting Temperatures in Barrio San Isidro, Madrid</h1>", unsafe_allow_html=True)
 
-# Provide a brief summary with a link
-st.write("""
-This visualization features productivized XGBoost and LSTM machine learning models trained on temperature data from Madrid's open data portal. The model updates hourly using real-time temperature data [available here](https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=4985724ec1acd610VgnVCM1000001d4a900aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default). Its predictions are continuously compared with historical temperature records to provide insights into trends and forecast accuracy. This productivized viz uses Airflow, Google Drive and Streamlit. You can check the [productivized model here](https://bit.ly/madridtemp).
-""")
+
 
 # URLs for the CSV files
 historic_url = 'https://drive.google.com/uc?id=12IUAsaeNNcNbIgXsXcR0UBqrKPx-ZncK'
@@ -73,13 +88,14 @@ mape_xgb = mean_absolute_percentage_error(df_merged['temperature'], df_merged[xg
 mape_lstm = mean_absolute_percentage_error(df_merged['temperature'], df_merged[lstm_pred_column])
 
 # Display the MAPE values side by side
+
 st.markdown(f"""
     <div style="display: flex; justify-content: space-around;">
-        <div style="color: darkorange; font-size: 20px; font-weight: bold;">
-            Last 30 hours XGB MAPE: {mape_xgb:.2%}
+        <div style="color: darkorange; font-size: 25px; font-weight: bold;">
+            24h XGB MAPE: {mape_xgb:.2%}
         </div>
-        <div style="color: #5bcf6e; font-size: 20px; font-weight: bold;">
-            Last 30 hours LSTM MAPE: {mape_lstm:.2%}
+        <div style="color: #5bcf6e; font-size: 25px; font-weight: bold;">
+            24h LSTM MAPE: {mape_lstm:.2%}
         </div>
     </div>
 """, unsafe_allow_html=True)
@@ -216,6 +232,3 @@ table_df = df_merged[['datetime', 'temperature', xgb_pred_column, lstm_pred_colu
 # Display the table in Streamlit
 st.write("### Temperature and Predictions")
 st.dataframe(table_df.rename(columns={'pred_xgb':'XGB Predictions','pred_lstm':'LSTM Predictions'}).round(1))
-
-st.markdown("<p style='font-size:12px;'>Origen de los datos en tiempo real: Ayuntamiento de Madrid. This app is not related in any way with Ayuntamiento de Madrid.</p>", 
-    unsafe_allow_html=True)
