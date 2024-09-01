@@ -56,7 +56,7 @@ st.markdown("<h1 style='margin-top: 0;'>Predicting Temperatures in Barrio San Is
 
 
 # URLs for the CSV files
-historic_url = 'https://drive.google.com/uc?id=12IUAsaeNNcNbIgXsXcR0UBqrKPx-ZncK'
+#historic_url = 'https://drive.google.com/uc?id=12IUAsaeNNcNbIgXsXcR0UBqrKPx-ZncK'
 predictions_url = 'https://drive.google.com/uc?id=1KXjcZsmCR5DMFXAAFQF34mhGtmnQI9qO'
 predictions_url = 'https://drive.google.com/uc?id=1EofTofvRwQylkT_e8C0L5Iy0yUVO46dz'
 
@@ -65,8 +65,9 @@ def load_data(url):
     return pd.read_csv(url)
 
 # Load the dataframes
-historic_df = load_data(historic_url)
+#historic_df = load_data(historic_url)
 predictions_df = load_data(predictions_url)
+historic_df = predictions_df[['datetime','18']].rename(columns={'18':'temperature'}).dropna()
 
 # Convert 'datetime' columns to datetime objects
 historic_df['datetime'] = pd.to_datetime(historic_df['datetime'])
