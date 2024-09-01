@@ -26,16 +26,17 @@ with st.sidebar:
         unsafe_allow_html=True
     )
     st.markdown("<h2>Created by Juan C Basurto</h2>", unsafe_allow_html=True)
-    # Create two columns
-    col1, col2 = st.columns([1, 5])  # Adjust the width ratio as needed
+    #
 
-    # Place the image in the first column
-    with col1:
-        st.image("img/github-logo.png", width=25)
-
-    # Place the markdown link in the second column
-    with col2:
-        st.markdown("[GitHub Profile](https://github.com/jbasurtod)", unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div style="text-align: left;">
+            <a href="https://github.com/jbasurtod" target="_blank"><p style="font-size:18px;"><img src="https://raw.githubusercontent.com/jbasurtod/streamlit_madrid_temperature_prediction/main/img/github-logo.png" width="25"> GithHub Profile</p></a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    
     # Provide a brief summary with a link
     st.markdown("<h2>About This Streamlit App</h2>", unsafe_allow_html=True)
     st.write("""
