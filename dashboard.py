@@ -40,11 +40,14 @@ with st.sidebar:
     # Provide a brief summary with a link
     st.markdown("<h2>About This Streamlit App</h2>", unsafe_allow_html=True)
     st.write("""
-    This visualization features productivized two XGBoost and LSTM machine learning models trained on temperature data from Madrid's open data portal. Using Airflow, Python and Google Drive, new temperature predictions are generated every hour as new data becomes available from the Ayuntamiento de Madrid [Open Data Portal](https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=4985724ec1acd610VgnVCM1000001d4a900aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default). Its predictions are continuously compared with historical temperature records to provide pick the XGB/LSTM model used in the final productivized Temp Forecast App, which can be checked [through the following this link](https://bit.ly/madridtemp).
-    """)
+    This visualization features productivized two XGBoost and LSTM machine learning models trained on temperature data from Madrid's open data portal. Using Airflow, Python and Google Drive, new temperature predictions are generated every hour as new data becomes available from the Ayuntamiento de Madrid [Open Data Portal](https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=4985724ec1acd610VgnVCM1000001d4a900aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=default). Its predictions are continuously compared with historical temperature records to provide pick the XGB/LSTM model used in the final productivized Temp Forecast App.
+    """, unsafe_allow_html=True)
 
+    st.write("""
+    <div style="margin-top:10px;margin-bottom:20px;margin-left: auto;margin-right: auto;display:block;width:90%;"><a href="https://bit.ly/madridtemp"><img src="https://raw.githubusercontent.com/jbasurtod/streamlit_madrid_temperature_prediction/main/img/check_app_button.png" /></a></div>
+             """, unsafe_allow_html=True)
 
-    st.markdown("<p style='font-size:12px;'>Origen de los datos en tiempo real: Ayuntamiento de Madrid. This app is not related in any way with Ayuntamiento de Madrid.</p>", 
+    st.markdown("<p style='font-size:12px;'>Origen de los datos en tiempo real: Ayuntamiento de Madrid. This app is not affiliated in any way with Ayuntamiento de Madrid.</p>", 
         unsafe_allow_html=True)
 
 # Set the title of the Streamlit page
