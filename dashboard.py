@@ -15,6 +15,15 @@ def mean_absolute_percentage_error(y_true, y_pred):
     nonzero_elements = y_true != 0
     return np.mean(np.abs((y_true[nonzero_elements] - y_pred[nonzero_elements]) / y_true[nonzero_elements]))
 
+# Function to calculate RMSE
+def root_mean_squared_error(y_true, y_pred):
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    # Filter out NaN values
+    valid_indices = ~np.isnan(y_true) & ~np.isnan(y_pred)
+    y_true, y_pred = y_true[valid_indices], y_pred[valid_indices]
+    # Calculate RMSE
+    return np.sqrt(np.mean((y_true - y_pred) ** 2))
+
 # Sidebar with a link
 with st.sidebar:
     st.markdown(
@@ -71,7 +80,7 @@ historic_df = predictions_df[['datetime','18']].rename(columns={'18':'temperatur
 historic_df['datetime'] = pd.to_datetime(historic_df['datetime'])
 predictions_df['datetime'] = pd.to_datetime(predictions_df['datetime'])
 
-historic_df = historic_df.tail(30)
+historic_df = historic_df.tail(24)
 
 # Align the start date of predictions_df with the start date of historic_df
 start_date = historic_df['datetime'].min()
@@ -86,19 +95,21 @@ df_merged.sort_values(by='datetime', inplace=True)
 lstm_pred_column = 'pred_lstm'
 xgb_pred_column = 'pred_xgb'
 
-# Calculate MAPE for the last 30 hours
+# Calculate MAPE for the last 24 hours
 mape_xgb = mean_absolute_percentage_error(df_merged['temperature'], df_merged[xgb_pred_column])
+rmse_xgb = root_mean_squared_error(df_merged['temperature'], df_merged[xgb_pred_column])
 mape_lstm = mean_absolute_percentage_error(df_merged['temperature'], df_merged[lstm_pred_column])
+rmse_lstm = root_mean_squared_error(df_merged['temperature'], df_merged[lstm_pred_column])
 
 # Display the MAPE values side by side
 
 st.markdown(f"""
     <div style="display: flex; justify-content: space-around;">
         <div style="color: darkorange; font-size: 25px; font-weight: bold;">
-            24h XGB MAPE: {mape_xgb:.2%}
+            24h XGB RMSE: {rmse_xgb:.4}
         </div>
         <div style="color: #5bcf6e; font-size: 25px; font-weight: bold;">
-            24h LSTM MAPE: {mape_lstm:.2%}
+            24h LSTM RMSE: {rmse_lstm:.4}
         </div>
     </div>
 """, unsafe_allow_html=True)
