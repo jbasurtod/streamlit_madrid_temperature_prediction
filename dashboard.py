@@ -14,7 +14,8 @@ def mean_absolute_percentage_error(y_true, y_pred):
     # Handle zero values by excluding them from the calculation
     nonzero_elements = y_true != 0
     return np.mean(np.abs((y_true[nonzero_elements] - y_pred[nonzero_elements]) / y_true[nonzero_elements]))
-
+def mean_absolute_error(y_true, y_pred):
+    return np.mean(np.abs(np.array(y_true) - np.array(y_pred)))
 # Function to calculate RMSE
 def root_mean_squared_error(y_true, y_pred):
     y_true, y_pred = np.array(y_true), np.array(y_pred)
@@ -96,20 +97,22 @@ lstm_pred_column = 'pred_lstm'
 xgb_pred_column = 'pred_xgb'
 
 # Calculate MAPE for the last 24 hours
-mape_xgb = mean_absolute_percentage_error(df_merged['temperature'], df_merged[xgb_pred_column])
-rmse_xgb = root_mean_squared_error(df_merged['temperature'], df_merged[xgb_pred_column])
-mape_lstm = mean_absolute_percentage_error(df_merged['temperature'], df_merged[lstm_pred_column])
-rmse_lstm = root_mean_squared_error(df_merged['temperature'], df_merged[lstm_pred_column])
+#mape_xgb = mean_absolute_percentage_error(df_merged['temperature'], df_merged[xgb_pred_column])
+mae_xgb = mean_absolute_error(df_merged['temperature'], df_merged[xgb_pred_column])
+#rmse_xgb = root_mean_squared_error(df_merged['temperature'], df_merged[xgb_pred_column])
+#mape_lstm = mean_absolute_percentage_error(df_merged['temperature'], df_merged[lstm_pred_column])
+mae_lstm = mean_absolute_error(df_merged['temperature'], df_merged[lstm_pred_column])
+#rmse_lstm = root_mean_squared_error(df_merged['temperature'], df_merged[lstm_pred_column])
 
 # Display the MAPE values side by side
 
 st.markdown(f"""
     <div style="display: flex; justify-content: space-around;">
         <div style="color: darkorange; font-size: 25px; font-weight: bold;">
-            24h XGB RMSE: {rmse_xgb:.4}
+            24h XGB MAE: {mae_xgb:.4}
         </div>
         <div style="color: #5bcf6e; font-size: 25px; font-weight: bold;">
-            24h LSTM RMSE: {rmse_lstm:.4}
+            24h LSTM MAE: {mae_lstm:.4}
         </div>
     </div>
 """, unsafe_allow_html=True)
