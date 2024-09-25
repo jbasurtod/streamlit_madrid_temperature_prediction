@@ -101,7 +101,6 @@ df_merged.sort_values(by='datetime', inplace=True)
 lstm_pred_column = 'pred_lstm'
 xgb_pred_column = 'pred_xgb'
 
-st.markdown("historic "+str(len(df_merged[xgb_pred_column])), unsafe_allow_html=True)
 
 
 # Calculate MAPE for the last 24 hours
