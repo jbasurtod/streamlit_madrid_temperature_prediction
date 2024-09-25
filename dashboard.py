@@ -14,8 +14,13 @@ def mean_absolute_percentage_error(y_true, y_pred):
     # Handle zero values by excluding them from the calculation
     nonzero_elements = y_true != 0
     return np.mean(np.abs((y_true[nonzero_elements] - y_pred[nonzero_elements]) / y_true[nonzero_elements]))
-def mean_absolute_error(y_true, y_pred):
-    return np.mean(np.abs(np.array(y_true) - np.array(y_pred)))
+def mean_absolute_error( y_true, y_pred):
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    # Handle zero values by excluding them from the calculation
+    non_nan_elements = ~np.isnan(y_true)
+    # MAE is the mean of the absolute differences between y_true and y_pred
+    return np.mean(np.abs(y_true[non_nan_elements] - y_pred[non_nan_elements]))
+
 # Function to calculate RMSE
 def root_mean_squared_error(y_true, y_pred):
     y_true, y_pred = np.array(y_true), np.array(y_pred)
@@ -95,6 +100,9 @@ df_merged.sort_values(by='datetime', inplace=True)
 
 lstm_pred_column = 'pred_lstm'
 xgb_pred_column = 'pred_xgb'
+
+st.markdown("historic "+str(len(df_merged[xgb_pred_column])), unsafe_allow_html=True)
+
 
 # Calculate MAPE for the last 24 hours
 #mape_xgb = mean_absolute_percentage_error(df_merged['temperature'], df_merged[xgb_pred_column])
