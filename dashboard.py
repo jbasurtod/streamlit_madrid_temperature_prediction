@@ -59,7 +59,7 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
     st.write("""
-    <div style="margin-top:10px;margin-bottom:20px;margin-left: auto;margin-right: auto;display:block;width:90%;"><a href="https://bit.ly/madridtemp"><img src="https://raw.githubusercontent.com/jbasurtod/streamlit_madrid_temperature_prediction/main/img/check_app_button.png" /></a></div>
+    <div style="margin-top:10px;margin-bottom:20px;margin-left: auto;margin-right: auto;display:block;width:90%;"><a href="https://bit.ly/cli-madrid"><img src="https://raw.githubusercontent.com/jbasurtod/streamlit_madrid_temperature_prediction/main/img/check_app_button.png" /></a></div>
              """, unsafe_allow_html=True)
 
     st.markdown("<p style='font-size:12px;'>Origen de los datos en tiempo real: Ayuntamiento de Madrid. This app is not affiliated in any way with Ayuntamiento de Madrid.</p>", 
