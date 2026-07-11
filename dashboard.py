@@ -30,6 +30,14 @@ def root_mean_squared_error(y_true, y_pred):
     # Calculate RMSE
     return np.sqrt(np.mean((y_true - y_pred) ** 2))
 
+def first_non_null_scalar(df, column_name):
+    if column_name not in df.columns:
+        return None
+    series = pd.to_numeric(df[column_name], errors="coerce").dropna()
+    if series.empty:
+        return None
+    return float(series.iloc[0])
+
 # Sidebar with a link
 with st.sidebar:
     st.markdown(
@@ -101,15 +109,14 @@ df_merged.sort_values(by='datetime', inplace=True)
 lstm_pred_column = 'pred_lstm'
 xgb_pred_column = 'pred_xgb'
 
+mae_xgb = first_non_null_scalar(predictions_df, 'mae_xgb')
+mae_lstm = first_non_null_scalar(predictions_df, 'mae_lstm')
 
-
-# Calculate MAPE for the last 24 hours
-#mape_xgb = mean_absolute_percentage_error(df_merged['temperature'], df_merged[xgb_pred_column])
-mae_xgb = mean_absolute_error(df_merged['temperature'], df_merged[xgb_pred_column])
-#rmse_xgb = root_mean_squared_error(df_merged['temperature'], df_merged[xgb_pred_column])
-#mape_lstm = mean_absolute_percentage_error(df_merged['temperature'], df_merged[lstm_pred_column])
-mae_lstm = mean_absolute_error(df_merged['temperature'], df_merged[lstm_pred_column])
-#rmse_lstm = root_mean_squared_error(df_merged['temperature'], df_merged[lstm_pred_column])
+# Backward compatible fallback for old CSVs without MAE columns
+if mae_xgb is None:
+    mae_xgb = mean_absolute_error(df_merged['temperature'], df_merged[xgb_pred_column])
+if mae_lstm is None:
+    mae_lstm = mean_absolute_error(df_merged['temperature'], df_merged[lstm_pred_column])
 
 # Display the MAPE values side by side
 
